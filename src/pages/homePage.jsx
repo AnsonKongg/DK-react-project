@@ -1,4 +1,4 @@
-import React, {  } from "react";
+import React from "react";
 import { Avatar, List, Space, Typography, Calendar } from "antd";
 import { MessageOutlined, StarOutlined } from "@ant-design/icons";
 const { Text } = Typography;
