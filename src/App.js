@@ -1,24 +1,40 @@
-import logo from './logo.svg';
+import React from "react";
+import { Switch, Route } from "react-router-dom";
 import './App.css';
+import 'antd/dist/antd.css';
+import PageLayout from './components/layout';
+import HomePage from './pages/homePage';
+import PeoplePage from './pages/peoplePage';
+import Profile from './pages/profilePage';
 
-function App() {
+const routes = [
+  {
+    path: '/people',
+    component: PeoplePage,
+  },
+  {
+    path: '/profile',
+    component: Profile
+  },
+  {
+    path: '/',
+    component: HomePage,
+  },
+];
+
+function App(props) {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <PageLayout>
+      <Switch>
+        {routes.map((route, index) => (
+          <Route
+            key={route.path}
+            path={route.path}
+            component={route.component}
+          />
+        ))}
+      </Switch>
+    </PageLayout>
   );
 }
 
