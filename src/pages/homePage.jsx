@@ -1,4 +1,5 @@
 import React from "react";
+import { nanoid } from 'nanoid';
 import { Avatar, List, Space, Typography, Calendar } from "antd";
 import { MessageOutlined, StarOutlined } from "@ant-design/icons";
 const { Text } = Typography;
@@ -35,9 +36,9 @@ const Home = (props) => {
             pageSize: 3,
           }}
           dataSource={listData}
-          renderItem={(item, index) => (
+          renderItem={(item) => (
             <List.Item
-              key={index}
+              key={nanoid()}
               actions={[
                 <IconText
                   icon={StarOutlined}
