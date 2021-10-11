@@ -4,10 +4,15 @@ import './App.css';
 import 'antd/dist/antd.css';
 import PageLayout from './components/layout';
 import HomePage from './pages/homePage';
+import EventDetailPage from './pages/eventDetailPage';
 import PeoplePage from './pages/peoplePage';
 import Profile from './pages/profilePage';
 
 const routes = [
+  {
+    path: '/eventDetail/:eventId',
+    component: EventDetailPage,
+  },
   {
     path: '/people',
     component: PeoplePage,

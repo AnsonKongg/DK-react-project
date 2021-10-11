@@ -1,7 +1,8 @@
 import * as types from "../config/ActionTypes";
 const eventState = {
     type: "",
-    eventList: {},
+    eventList: [],
+    eventDetail: {},
 };
 
 const eventReducer = (state = eventState, action) => {
@@ -13,6 +14,17 @@ const eventReducer = (state = eventState, action) => {
                 eventList: action.eventList,
             };
         case types.GET_EVENT_FAILED:
+            return {
+                ...state,
+                type: action.type,
+            };
+        case types.GET_EVENT_DETAIL_SUCCESS:
+            return {
+                ...state,
+                type: action.type,
+                eventDetail: action.eventDetail,
+            };
+        case types.GET_EVENT_DETAIL_FAILED:
             return {
                 ...state,
                 type: action.type,

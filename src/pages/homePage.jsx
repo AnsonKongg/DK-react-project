@@ -1,26 +1,23 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 import * as eventAction from "../actions/eventAction";
+import * as eventHelper from "../utils/eventHelper";
 import { Avatar, List, Space, Typography, Calendar } from "antd";
 import { MessageOutlined, StarOutlined } from "@ant-design/icons";
 const { Text } = Typography;
 
 const Home = (props) => {
-  const { type, eventList, getEventList } = props;
+  const { eventList, getEventList } = props;
+  const history = useHistory();
 
   useEffect(() => {
     getEventList();
   }, [getEventList]);
 
-  // Calculate the average of event_reviews rate
-  const calculateRate = (event_reviews) => {
-    const sum =
-      event_reviews.reduce(
-        (previousValue, currentValue) => previousValue + currentValue.rate,
-        0
-      ) / event_reviews.length;
-    return Number(sum).toFixed(1);
-  };
+  const goToDetail = event_id => {
+    history.push(`/eventDetail/${event_id}`);
+  } 
   const IconText = ({ icon, text }) => (
     <Space>
       {React.createElement(icon)}
@@ -30,7 +27,7 @@ const Home = (props) => {
 
   return (
     <div className="row-container">
-      <div className="card">
+      <div className="event-list">
         {eventList && eventList.length > 0 && (
           <List
             itemLayout="vertical"
@@ -50,7 +47,7 @@ const Home = (props) => {
                     icon={StarOutlined}
                     text={
                       item.event_reviews?.length
-                        ? calculateRate(item.event_reviews)
+                        ? eventHelper.calculateRate(item.event_reviews)
                         : 0
                     }
                     key="list-vertical-star-o"
@@ -61,6 +58,7 @@ const Home = (props) => {
                     key="list-vertical-message"
                   />,
                 ]}
+                onClick={() => goToDetail(item.id)}
               >
                 <List.Item.Meta
                   avatar={<Avatar src={item.picture_url} />}
