@@ -1,15 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import * as eventAction from "../actions/eventAction";
 import * as eventHelper from "../utils/eventHelper";
 import { Avatar, List, Space, Typography, Calendar } from "antd";
 import { MessageOutlined, StarOutlined } from "@ant-design/icons";
+import moment from "moment";
 const { Text } = Typography;
 
 const Home = (props) => {
   const { eventList, getEventList } = props;
   const history = useHistory();
+  const [selectedDate, setSelectedDate] = useState(moment()); 
 
   useEffect(() => {
     getEventList();
@@ -17,7 +19,12 @@ const Home = (props) => {
 
   const goToDetail = event_id => {
     history.push(`/eventDetail/${event_id}`);
-  } 
+  }
+  // When calender date changed, refresh event list filtered by date
+  const calenderDateChange = date => {
+    setSelectedDate(date)
+    getEventList(date)
+  }
   const IconText = ({ icon, text }) => (
     <Space>
       {React.createElement(icon)}
@@ -33,9 +40,6 @@ const Home = (props) => {
             itemLayout="vertical"
             size="large"
             pagination={{
-              // onChange: (page) => {
-              //   console.log(page);
-              // },
               pageSize: 3,
             }}
             dataSource={eventList}
@@ -63,7 +67,7 @@ const Home = (props) => {
                 <List.Item.Meta
                   avatar={<Avatar src={item.picture_url} />}
                   title={<b>{item.title}</b>}
-                  description={`${item.category} | ${item.city} | ${item.date}`}
+                  description={`${item.category} | ${item.city} | ${moment(item.date).format("MMMM Do YYYY, h:mm:ss a")}`}
                 />
                 {item.description}
               </List.Item>
@@ -74,7 +78,8 @@ const Home = (props) => {
       <div className="home-calendar">
         <Calendar
           fullscreen={false}
-          // onPanelChange={onPanelChange}
+          value={selectedDate}
+          onChange={date => calenderDateChange(date)}
         />
       </div>
     </div>
