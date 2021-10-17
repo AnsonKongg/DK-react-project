@@ -1,6 +1,6 @@
 import * as APIs from "../config/APIs";
 import * as types from "../config/ActionTypes";
-const axios = require('axios');
+import * as "axios";
 const userToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzUsImlhdCI6MTYzNDAwODU4NH0.2gXar6rVzf7Mq1FMwX2Q-2PKItjXi_krVJ6BufC0pWU"
 
 export const getEventList = date => {
