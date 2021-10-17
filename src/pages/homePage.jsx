@@ -11,7 +11,7 @@ const { Text } = Typography;
 const Home = (props) => {
   const { eventList, getEventList } = props;
   const history = useHistory();
-  const [selectedDate, setSelectedDate] = useState(moment()); 
+  const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD')); 
 
   useEffect(() => {
     getEventList();
@@ -21,7 +21,8 @@ const Home = (props) => {
     history.push(`/eventDetail/${event_id}`);
   }
   // When calender date changed, refresh event list filtered by date
-  const calenderDateChange = date => {
+  const calenderDateChange = time => {
+    const date = time.format('YYYY-MM-DD')
     setSelectedDate(date)
     getEventList(date)
   }
@@ -78,7 +79,7 @@ const Home = (props) => {
       <div className="home-calendar">
         <Calendar
           fullscreen={false}
-          value={selectedDate}
+          value={moment(selectedDate)}
           onChange={date => calenderDateChange(date)}
         />
       </div>

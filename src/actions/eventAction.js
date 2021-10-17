@@ -1,15 +1,18 @@
 import * as APIs from "../config/APIs";
 import * as types from "../config/ActionTypes";
-import * as "axios";
+import * as axios from "axios";
 const userToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzUsImlhdCI6MTYzNDAwODU4NH0.2gXar6rVzf7Mq1FMwX2Q-2PKItjXi_krVJ6BufC0pWU"
 
 export const getEventList = date => {
     return async dispatch => {
         try {
             const url = APIs.GET_EVENT_LIST_API;
-            const response = await axios.get(url)
-            // Filter event list by date
-            const eventList = date ? response.data.filter((event) => date.isSame(event.date,'day')) : response.data
+            const response = await axios.get(url, {
+                params: {
+                    date: date
+                }
+            })
+            const eventList = response.data
             dispatch({
                 type: types.GET_EVENT_SUCCESS,
                 eventList,
