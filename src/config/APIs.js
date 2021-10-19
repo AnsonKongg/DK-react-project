@@ -1,0 +1,1 @@
+export const GET_EVENT_LIST_API = "https://dk-react-backend.herokuapp.com/events"
