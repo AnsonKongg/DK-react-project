@@ -3,15 +3,16 @@ import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import * as eventAction from "../actions/eventAction";
 import * as eventHelper from "../utils/eventHelper";
-import { Avatar, List, Space, Typography, Calendar } from "antd";
+import { Avatar, List, Space, Typography } from "antd";
 import { MessageOutlined, StarOutlined } from "@ant-design/icons";
-import moment from "moment";
+import { Calendar } from '../components';
+import { format } from 'date-fns'
 const { Text } = Typography;
 
 const Home = (props) => {
   const { eventList, getEventList } = props;
   const history = useHistory();
-  const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD')); 
+  const [selectedDate, setSelectedDate] = useState(new Date()); 
 
   useEffect(() => {
     getEventList();
@@ -21,9 +22,9 @@ const Home = (props) => {
     history.push(`/eventDetail/${event_id}`);
   }
   // When calender date changed, refresh event list filtered by date
-  const calenderDateChange = time => {
-    const date = time.format('YYYY-MM-DD')
-    setSelectedDate(date)
+  const calenderDateChange = new_date => {
+    const date = format(new_date,'yyyy-MM-dd')
+    setSelectedDate(new_date)
     getEventList(date)
   }
   const IconText = ({ icon, text }) => (
@@ -68,7 +69,7 @@ const Home = (props) => {
                 <List.Item.Meta
                   avatar={<Avatar src={item.picture_url} />}
                   title={<b>{item.title}</b>}
-                  description={`${item.category} | ${item.city} | ${moment(item.date).format("MMMM Do YYYY, h:mm:ss a")}`}
+                  description={`${item.category} | ${item.city} | ${format(new Date(item.date), 'yyyy-MM-dd')}`}
                 />
                 {item.description}
               </List.Item>
@@ -79,7 +80,7 @@ const Home = (props) => {
       <div className="home-calendar">
         <Calendar
           fullscreen={false}
-          value={moment(selectedDate)}
+          value={selectedDate}
           onChange={date => calenderDateChange(date)}
         />
       </div>

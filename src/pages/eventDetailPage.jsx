@@ -5,7 +5,7 @@ import * as eventHelper from "../utils/eventHelper";
 import * as eventAction from "../actions/eventAction";
 import { Avatar, Typography, Row, Col, Divider, Button } from "antd";
 import { StarOutlined } from "@ant-design/icons";
-import moment from "moment";
+import { format } from 'date-fns'
 import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
 const { Text, Title } = Typography;
 
@@ -82,7 +82,7 @@ const EventDetail = (props) => {
               <Text>Date & Time</Text>
             </Col>
             <Col>
-              <Text>{moment(eventDetail.date).format("MM/DD - HH:mm")}</Text>
+              <Text>{eventDetail.date && format(new Date(eventDetail.date), "MM/dd - h:mm")}</Text>
             </Col>
           </Row>
           <Row className="card-padding" justify="space-between">
