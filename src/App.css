@@ -63,6 +63,7 @@
   max-height: 90vh;
   background-color: #fff;
   padding: 20px;
+  overflow-y: scroll;
 }
 .card-title {
   font-size: 25px;
