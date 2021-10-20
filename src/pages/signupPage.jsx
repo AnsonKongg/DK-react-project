@@ -7,18 +7,18 @@ import { Link } from "react-router-dom";
 import { Form, Input, Button, Typography } from "antd";
 const { Text, Title } = Typography;
 
-const Login = (props) => {
-  const { type, userToken, onLogin } = props;
+const SignUp = (props) => {
+  const { type, userToken, onSignUp } = props;
   const history = useHistory();
 
   useEffect(() => {
-    if (type === types.LOGIN_SUCCESS && userToken) {
-      history.push('/');
+    if (type === types.SIGNUP_SUCCESS && userToken) {
+      history.push("/");
     }
   }, [type, userToken, history]);
 
   const onFinish = (values) => {
-    onLogin(values)
+    onSignUp(values);
   };
   // Form validation messages
   const validateMessages = {
@@ -31,7 +31,7 @@ const Login = (props) => {
   return (
     <div className="whole-page-container">
       <Title className="login-text" level={3}>
-        Login
+        Sign up
       </Title>
       <Form
         name="basic"
@@ -49,6 +49,20 @@ const Login = (props) => {
           <Input />
         </Form.Item>
         <Form.Item
+          label="First Name"
+          name="firstName"
+          rules={[{ required: true }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Last Name"
+          name="lastName"
+          rules={[{ required: true }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
           label="Password"
           name="password"
           rules={[{ required: true }]}
@@ -62,13 +76,13 @@ const Login = (props) => {
           }}
         >
           <Button type="primary" htmlType="submit">
-            Login
+            Create an account
           </Button>
         </Form.Item>
       </Form>
       <Text className="login-text">
-        Don't have a accout?&nbsp;
-        <Link to="/signup">Sign up</Link>
+        Already have an account?&nbsp;
+        <Link to="/login">Login</Link>
       </Text>
     </div>
   );
@@ -82,6 +96,6 @@ const mapStateToProps = (state) => ({
 
 // Dispatch actions
 const mapDispatchToProps = {
-  onLogin: loginAction.login,
+  onSignUp: loginAction.signup,
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

@@ -19,6 +19,17 @@
   flex-direction: column;
   justify-content: space-between;
 }
+.whole-page-container {
+  height: 100%;
+  background-color: #fff;
+  padding: 10px;
+}
+.whole-page-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
 
 .header-icon {
   font-size: 20px;
@@ -34,6 +45,7 @@
   min-height: 280;
 }
 
+/* Event Section */
 .event-list {
   width: 50vw;
   max-height: 90vh;
@@ -85,4 +97,13 @@
   width: 27vw;
   height: 30vh;
   position: 'relative';
+}
+
+/* Login Section */
+.login-text {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 20vh;
 }

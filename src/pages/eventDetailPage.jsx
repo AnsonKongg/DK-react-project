@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import * as eventHelper from "../utils/eventHelper";
 import * as eventAction from "../actions/eventAction";
@@ -10,13 +11,18 @@ import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
 const { Text, Title } = Typography;
 
 const EventDetail = (props) => {
-  const { eventDetail, getEventDetail } = props;
+  const { userToken, eventDetail, getEventDetail } = props;
   const { eventId } = useParams();
+  const history = useHistory();
   const rating = useMemo(() => eventHelper.calculateRate(eventDetail.reviews),[eventDetail.reviews]);
 
   useEffect(() => {
-    getEventDetail(eventId);
-  }, [eventId, getEventDetail]);
+    if (userToken) {
+      getEventDetail(eventId, userToken);
+    } else {
+      history.push('/login');
+    }
+  }, [userToken, eventId, getEventDetail, history]);
 
   if (!eventDetail) {
     return;
@@ -143,6 +149,7 @@ const EventDetail = (props) => {
 const mapStateToProps = (state) => ({
   type: state.eventReducer.type,
   eventDetail: state.eventReducer.eventDetail,
+  userToken: state.loginReducer.userToken,
 });
 
 // Dispatch actions

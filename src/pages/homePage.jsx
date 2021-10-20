@@ -10,7 +10,7 @@ import { format } from 'date-fns'
 const { Text } = Typography;
 
 const Home = (props) => {
-  const { eventList, getEventList } = props;
+  const { eventList, userToken, getEventList } = props;
   const history = useHistory();
   const [selectedDate, setSelectedDate] = useState(new Date()); 
 
@@ -19,7 +19,11 @@ const Home = (props) => {
   }, [getEventList]);
 
   const goToDetail = event_id => {
-    history.push(`/eventDetail/${event_id}`);
+    if (userToken) {
+      history.push(`/eventDetail/${event_id}`);
+    } else {
+      history.push('/login');
+    }
   }
   // When calender date changed, refresh event list filtered by date
   const calenderDateChange = new_date => {
@@ -92,6 +96,7 @@ const Home = (props) => {
 const mapStateToProps = (state) => ({
   type: state.eventReducer.type,
   eventList: state.eventReducer.eventList,
+  userToken: state.loginReducer.userToken,
 });
 
 // Dispatch actions

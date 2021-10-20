@@ -1,7 +1,6 @@
 import * as APIs from "../config/APIs";
 import * as types from "../config/ActionTypes";
 import * as axios from "axios";
-const userToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzUsImlhdCI6MTYzNDAwODU4NH0.2gXar6rVzf7Mq1FMwX2Q-2PKItjXi_krVJ6BufC0pWU"
 
 export const getEventList = date => {
     return async dispatch => {
@@ -25,11 +24,11 @@ export const getEventList = date => {
     }
 }
 
-export const getEventDetail = (eventId) => {
+export const getEventDetail = (eventId, userToken) => {
     return async dispatch => {
         try {
             const url = APIs.GET_EVENT_LIST_API + "/" + eventId;
-            axios.defaults.headers.Authorization = userToken;
+            axios.defaults.headers.Authorization = "Bearer " + userToken;
             const response = await axios.get(url)
             const eventDetail = response.data
             dispatch({
