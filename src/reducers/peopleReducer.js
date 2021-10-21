@@ -10,7 +10,7 @@ const peopleReducer = (state = peopleState, action) => {
             return {
                 ...state,
                 type: action.type,
-                // userList: action.userList,
+                userList: action.userList,
             };
         case types.GET_ALL_USER_FAILED:
             return {

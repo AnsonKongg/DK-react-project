@@ -86,3 +86,12 @@
   height: 30vh;
   position: 'relative';
 }
+
+.people-page-backgroup {
+  height: 90vh;
+  background-color: #fff;
+  padding: 20px;
+  padding-left: 40px;
+  padding-right: 40px;
+  overflow-y: scroll;
+}
