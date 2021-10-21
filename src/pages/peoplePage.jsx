@@ -1,4 +1,6 @@
 import React from "react";
+import { connect } from "react-redux";
+import * as peopleAction from "../actions/peopleAction";
 
 const People = (props) => {
 
@@ -9,4 +11,15 @@ const People = (props) => {
   );
 };
 
-export default People;
+// Selectors
+const mapStateToProps = (state) => ({
+  type: state.peopleReducer.type,
+  userList: state.peopleReducer.userList,
+});
+
+// Dispatch actions
+const mapDispatchToProps = {
+  getAllUsers: peopleAction.getAllUsers,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(People);
