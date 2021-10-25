@@ -74,9 +74,19 @@
 }
 .card-small {
   width: 30vw;
-  max-height: 55vh;
+  max-height: 60vh;
   background-color: #fff;
   padding: 20px;
+}
+.card-small-text-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.card-small-text {
+  height: 5vh;
 }
 .card-button {
   width: 100%;

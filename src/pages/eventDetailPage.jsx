@@ -3,20 +3,49 @@ import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import * as eventHelper from "../utils/eventHelper";
 import * as eventAction from "../actions/eventAction";
-import { Avatar, Typography, Row, Col, Divider, Button } from "antd";
+import * as types from "../config/ActionTypes";
+import { Avatar, Typography, Row, Col, Divider, Button, Modal } from "antd";
 import { StarOutlined } from "@ant-design/icons";
-import { format } from 'date-fns'
+import { format } from "date-fns";
 import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
 const { Text, Title } = Typography;
 
 const EventDetail = (props) => {
-  const { eventDetail, getEventDetail } = props;
+  const { type, eventDetail, getEventDetail, attendEvent, withdrawEvent } = props;
   const { eventId } = useParams();
-  const rating = useMemo(() => eventHelper.calculateRate(eventDetail.reviews),[eventDetail.reviews]);
+  const rating = useMemo(
+    () => eventHelper.calculateRate(eventDetail.reviews),
+    [eventDetail.reviews]
+  );
+  const userAttended = useMemo(
+    () => eventHelper.checkUserAttend(eventDetail.attendees, 35),
+    [eventDetail.attendees]
+  );
 
   useEffect(() => {
     getEventDetail(eventId);
   }, [eventId, getEventDetail]);
+  useEffect(() => {
+    if (type === types.ATTEND_EVENT_SUCCESS) {
+      Modal.success({
+        content: 'You have successfully registered this event.',
+      });
+      getEventDetail(eventId)
+    }
+    else if (type === types.WITHDRAW_EVENT_SUCCESS) {
+      Modal.success({
+        content: 'You have successfully removed the registeration of this event.',
+      });
+      getEventDetail(eventId)
+    }
+  }, [type, eventId, getEventDetail]);
+
+  const _attendClicked = () => {
+    attendEvent(eventId);
+  };
+  const _withdrawAttendClicked = () => {
+    withdrawEvent(eventId);
+  };
 
   if (!eventDetail) {
     return;
@@ -31,9 +60,7 @@ const EventDetail = (props) => {
             </Col>
             <Col>
               <StarOutlined />
-              <Text style={{ paddingLeft: 5 }}>
-                {rating}
-              </Text>
+              <Text style={{ paddingLeft: 5 }}>{rating}</Text>
             </Col>
           </Row>
           <Row className="card-padding" justify="center">
@@ -82,7 +109,10 @@ const EventDetail = (props) => {
               <Text>Date & Time</Text>
             </Col>
             <Col>
-              <Text>{eventDetail.date && format(new Date(eventDetail.date), "MM/dd - h:mm")}</Text>
+              <Text>
+                {eventDetail.date &&
+                  format(new Date(eventDetail.date), "MM/dd - h:mm")}
+              </Text>
             </Col>
           </Row>
           <Row className="card-padding" justify="space-between">
@@ -108,12 +138,12 @@ const EventDetail = (props) => {
                   position: "relative",
                 }}
                 initialCenter={{
-                  lat: Number(eventDetail.lat),
-                  lng: Number(eventDetail.long),
+                  lat: eventDetail.lat ? Number(eventDetail.lat) : 0,
+                  lng: eventDetail.long ? Number(eventDetail.long) : 0,
                 }}
                 center={{
-                  lat: Number(eventDetail.lat),
-                  lng: Number(eventDetail.long),
+                  lat: eventDetail.lat ? Number(eventDetail.lat) : 0,
+                  lng: eventDetail.long ? Number(eventDetail.long) : 0,
                 }}
                 zoom={15}
                 google={props.google}
@@ -130,9 +160,29 @@ const EventDetail = (props) => {
             </div>
           </Row>
           <Divider />
-          <Button className="card-button" type="primary" size="large">
-            Attend
-          </Button>
+          {userAttended ? (
+            <div className="card-small-text-container ">
+              <Text className="card-small-text " strong>
+                You are attending this event
+              </Text>
+              <Button
+                className="card-button"
+                size="large"
+                onClick={() => _withdrawAttendClicked()}
+              >
+                Withdraw Attendence
+              </Button>
+            </div>
+          ) : (
+            <Button
+              className="card-button"
+              type="primary"
+              size="large"
+              onClick={() => _attendClicked()}
+            >
+              Attend
+            </Button>
+          )}
         </div>
       </div>
     );
@@ -148,6 +198,8 @@ const mapStateToProps = (state) => ({
 // Dispatch actions
 const mapDispatchToProps = {
   getEventDetail: eventAction.getEventDetail,
+  attendEvent: eventAction.attendEvent,
+  withdrawEvent: eventAction.withdrawEvent,
 };
 
 const EventDetailMap = GoogleApiWrapper({
