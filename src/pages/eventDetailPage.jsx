@@ -1,18 +1,30 @@
 import React, { useEffect, useMemo } from "react";
 import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import * as eventHelper from "../utils/eventHelper";
 import * as eventAction from "../actions/eventAction";
 import * as types from "../config/ActionTypes";
-import { Avatar, Typography, Row, Col, Divider, Button, Modal } from "antd";
+import {
+  Avatar,
+  Typography,
+  Row,
+  Col,
+  Divider,
+  Button,
+  Rate,
+  List,
+  Modal,
+} from "antd";
 import { StarOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
 const { Text, Title } = Typography;
 
 const EventDetail = (props) => {
-  const { type, eventDetail, getEventDetail, attendEvent, withdrawEvent } = props;
+  const { type, eventDetail, userToken, getEventDetail, attendEvent, withdrawEvent } = props;
   const { eventId } = useParams();
+  const history = useHistory();
   const rating = useMemo(
     () => eventHelper.calculateRate(eventDetail.reviews),
     [eventDetail.reviews]
@@ -23,8 +35,12 @@ const EventDetail = (props) => {
   );
 
   useEffect(() => {
-    getEventDetail(eventId);
-  }, [eventId, getEventDetail]);
+    if (userToken) {
+      getEventDetail(eventId, userToken);
+    } else {
+      history.push("/login");
+    }
+  }, [userToken, eventId, getEventDetail, history]);
   useEffect(() => {
     if (type === types.ATTEND_EVENT_SUCCESS) {
       Modal.success({
@@ -102,6 +118,31 @@ const EventDetail = (props) => {
                 )}
             </div>
           </div>
+          <Divider />
+          <div className="card-host-container">
+            <Text strong>What other people think about this event?</Text>
+          </div>
+          {eventDetail.reviews?.length > 0 && (
+            <List
+              itemLayout="vertical"
+              pagination={{
+                pageSize: 5,
+              }}
+              dataSource={eventDetail.reviews}
+              renderItem={(item) => (
+                <List.Item key={item.id}>
+                  <div className="row-container">
+                    <Rate value={item.rate} />
+                    <Text type="secondary">
+                      posted at:{" "}
+                      {format(new Date(item.created_at), "MM/dd - h:mm")}
+                    </Text>
+                  </div>
+                  <Text>Review - {item.review}</Text>
+                </List.Item>
+              )}
+            />
+          )}
         </div>
         <div className="card-small">
           <Row justify="space-between">
@@ -193,6 +234,7 @@ const EventDetail = (props) => {
 const mapStateToProps = (state) => ({
   type: state.eventReducer.type,
   eventDetail: state.eventReducer.eventDetail,
+  userToken: state.loginReducer.userToken,
 });
 
 // Dispatch actions

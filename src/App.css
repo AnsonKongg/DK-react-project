@@ -19,6 +19,17 @@
   flex-direction: column;
   justify-content: space-between;
 }
+.whole-page-container {
+  height: 100%;
+  background-color: #fff;
+  padding: 10px;
+}
+.whole-page-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
 
 .header-icon {
   font-size: 20px;
@@ -34,6 +45,7 @@
   min-height: 280;
 }
 
+/* Event Section */
 .event-list {
   width: 50vw;
   max-height: 90vh;
@@ -51,6 +63,7 @@
   max-height: 90vh;
   background-color: #fff;
   padding: 20px;
+  overflow-y: scroll;
 }
 .card-title {
   font-size: 25px;
@@ -97,6 +110,7 @@
   position: 'relative';
 }
 
+/* people Section */
 .people-page-backgroup {
   height: 90vh;
   background-color: #fff;
@@ -104,4 +118,13 @@
   padding-left: 40px;
   padding-right: 40px;
   overflow-y: scroll;
+}
+
+/* Login Section */
+.login-text {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 20vh;
 }

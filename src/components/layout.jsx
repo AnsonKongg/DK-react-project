@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Layout, Menu, Button } from "antd";
+import Header from './header';
+import { Layout, Menu } from "antd";
 import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
   UserOutlined,
   VideoCameraOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 const PageLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -16,9 +15,6 @@ const PageLayout = ({ children }) => {
 
   const goToPage = (route) => {
     history.push(route);
-  };
-  const sideBarToggle = () => {
-    setCollapsed(!collapsed);
   };
 
   return (
@@ -50,31 +46,7 @@ const PageLayout = ({ children }) => {
         </Menu>
       </Sider>
       <Layout className="site-layout">
-        <Header className="site-layout-background">
-          <div className="row-container">
-            <div>
-              {collapsed ? (
-                <MenuFoldOutlined
-                  className="header-icon"
-                  onClick={() => sideBarToggle()}
-                />
-              ) : (
-                <MenuUnfoldOutlined
-                  className="header-icon"
-                  onClick={() => sideBarToggle()}
-                />
-              )}
-            </div>
-            <div>
-              <span style={{ paddingRight: 10 }}>
-                <Button type="primary" ghost>
-                  Login
-                </Button>
-              </span>
-              <Button type="primary">Sign Up</Button>
-            </div>
-          </div>
-        </Header>
+        <Header collapsed={collapsed} setCollapsed={setCollapsed}/>
         <Content className="content-container">
          {children}
         </Content>

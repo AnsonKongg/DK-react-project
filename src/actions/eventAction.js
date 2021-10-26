@@ -1,7 +1,6 @@
 import * as APIs from "../config/APIs";
 import * as types from "../config/ActionTypes";
 import * as axios from "axios";
-const userToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzUsImlhdCI6MTYzNDg0OTAxM30.sMoqkGjL4punrVJCGdwvzk6x_n9jBpZNnU45AboPeGo"
 
 export const getEventList = date => {
     return async dispatch => {
@@ -25,11 +24,11 @@ export const getEventList = date => {
     }
 }
 
-export const getEventDetail = (eventId) => {
+export const getEventDetail = (eventId, userToken) => {
     return async dispatch => {
         try {
             const url = APIs.GET_EVENT_LIST_API + "/" + eventId;
-            axios.defaults.headers.Authorization = userToken;
+            axios.defaults.headers.Authorization = "Bearer " + userToken;
             const response = await axios.get(url)
             const eventDetail = response.data
             dispatch({
@@ -44,7 +43,7 @@ export const getEventDetail = (eventId) => {
     }
 }
 
-export const attendEvent = (eventId) => {
+export const attendEvent = (eventId, userToken) => {
     return async dispatch => {
         try {
             const url = APIs.EVENT_ATTENDEE_API+ "/" + eventId;
@@ -61,7 +60,7 @@ export const attendEvent = (eventId) => {
     }
 }
 
-export const withdrawEvent = (eventId) => {
+export const withdrawEvent = (eventId, userToken) => {
     return async dispatch => {
         try {
             const url = APIs.EVENT_ATTENDEE_API+ "/" + eventId;

@@ -7,6 +7,8 @@ import HomePage from './pages/homePage';
 import EventDetailPage from './pages/eventDetailPage';
 import PeoplePage from './pages/peoplePage';
 import Profile from './pages/profilePage';
+import Login from './pages/loginPage';
+import Signup from './pages/signupPage';
 
 const routes = [
   {
@@ -20,6 +22,14 @@ const routes = [
   {
     path: '/profile',
     component: Profile
+  },
+  {
+    path: '/login',
+    component: Login
+  },
+  {
+    path: '/signup',
+    component: Signup
   },
   {
     path: '/',
