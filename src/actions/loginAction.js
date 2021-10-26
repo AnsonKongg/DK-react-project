@@ -1,6 +1,7 @@
 import * as APIs from "../config/APIs";
 import * as types from "../config/ActionTypes";
 import * as axios from "axios";
+import jwt_decode from "jwt-decode";
 
 export const login = io_data => {
     return async dispatch => {
@@ -11,9 +12,11 @@ export const login = io_data => {
                 password: io_data.password,
             })
             const userToken = response.data.token
+            const userInfo = jwt_decode(userToken)
             dispatch({
                 type: types.LOGIN_SUCCESS,
                 userToken,
+                userID: userInfo.id,
             });
         } catch (error) {
             dispatch({
@@ -34,9 +37,11 @@ export const signup = io_data => {
                 password: io_data.password,
             })
             const userToken = response.data.token
+            const userInfo = jwt_decode(userToken)
             dispatch({
                 type: types.SIGNUP_SUCCESS,
                 userToken,
+                userID: userInfo.id,
             });
         } catch (error) {
             dispatch({

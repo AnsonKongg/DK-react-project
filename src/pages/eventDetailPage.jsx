@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
@@ -15,14 +15,28 @@ import {
   Rate,
   List,
   Modal,
+  Input,
 } from "antd";
 import { StarOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
-const { Text, Title } = Typography;
+const { Text, Title, Link } = Typography;
+const { TextArea } = Input;
 
 const EventDetail = (props) => {
-  const { type, eventDetail, userToken, getEventDetail, attendEvent, withdrawEvent } = props;
+  const {
+    type,
+    eventDetail,
+    userToken,
+    userID,
+    getEventDetail,
+    attendEvent,
+    withdrawEvent,
+    addEventReview,
+  } = props;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newReviewRate, setNewReviewRate] = useState(0);
+  const [newReviewText, setNewReviewText] = useState("");
   const { eventId } = useParams();
   const history = useHistory();
   const rating = useMemo(
@@ -30,8 +44,8 @@ const EventDetail = (props) => {
     [eventDetail.reviews]
   );
   const userAttended = useMemo(
-    () => eventHelper.checkUserAttend(eventDetail.attendees, 35),
-    [eventDetail.attendees]
+    () => eventHelper.checkUserAttend(eventDetail.attendees, userID),
+    [eventDetail.attendees, userID]
   );
 
   useEffect(() => {
@@ -44,23 +58,38 @@ const EventDetail = (props) => {
   useEffect(() => {
     if (type === types.ATTEND_EVENT_SUCCESS) {
       Modal.success({
-        content: 'You have successfully registered this event.',
+        content: "You have successfully registered this event.",
       });
-      getEventDetail(eventId)
-    }
-    else if (type === types.WITHDRAW_EVENT_SUCCESS) {
+      getEventDetail(eventId, userToken);
+    } else if (type === types.WITHDRAW_EVENT_SUCCESS) {
       Modal.success({
-        content: 'You have successfully removed the registeration of this event.',
+        content:
+          "You have successfully removed the registeration of this event.",
       });
-      getEventDetail(eventId)
+      getEventDetail(eventId, userToken);
+    } else if (type === types.ADD_REVIEW_SUCCESS) {
+      setModalVisible(false)
+      getEventDetail(eventId, userToken);
+    } else if (type === types.ADD_REVIEW_FAILED) {
+      setModalVisible(false)
     }
-  }, [type, eventId, getEventDetail]);
+  }, [type, eventId, userToken, getEventDetail]);
 
-  const _attendClicked = () => {
-    attendEvent(eventId);
-  };
-  const _withdrawAttendClicked = () => {
-    withdrawEvent(eventId);
+  const submitNewReview = () => {
+    if (!newReviewText) {
+      Modal.warning({
+        content: "Please input review content!!",
+      });
+    } else {
+      addEventReview(
+        {
+          rate: newReviewRate,
+          review: newReviewText,
+          event_id: eventId,
+        },
+        userToken
+      );
+    }
   };
 
   if (!eventDetail) {
@@ -119,8 +148,9 @@ const EventDetail = (props) => {
             </div>
           </div>
           <Divider />
-          <div className="card-host-container">
+          <div className="row-container">
             <Text strong>What other people think about this event?</Text>
+            <Link onClick={() => setModalVisible(true)}>Add Review</Link>
           </div>
           {eventDetail.reviews?.length > 0 && (
             <List
@@ -209,7 +239,7 @@ const EventDetail = (props) => {
               <Button
                 className="card-button"
                 size="large"
-                onClick={() => _withdrawAttendClicked()}
+                onClick={() => withdrawEvent(eventId, userToken)}
               >
                 Withdraw Attendence
               </Button>
@@ -219,12 +249,30 @@ const EventDetail = (props) => {
               className="card-button"
               type="primary"
               size="large"
-              onClick={() => _attendClicked()}
+              onClick={() => attendEvent(eventId, userToken)}
             >
               Attend
             </Button>
           )}
         </div>
+        <Modal
+          title="New Review"
+          visible={modalVisible}
+          okText="Submit"
+          onOk={submitNewReview}
+          onCancel={() => setModalVisible(false)}
+        >
+          <Rate
+            value={newReviewRate}
+            onChange={(value) => setNewReviewRate(value)}
+          />
+          <TextArea
+            rows={6}
+            showCount
+            maxLength={1000}
+            onChange={(e) => setNewReviewText(e.target.value)}
+          />
+        </Modal>
       </div>
     );
   }
@@ -235,11 +283,13 @@ const mapStateToProps = (state) => ({
   type: state.eventReducer.type,
   eventDetail: state.eventReducer.eventDetail,
   userToken: state.loginReducer.userToken,
+  userID: state.loginReducer.userID,
 });
 
 // Dispatch actions
 const mapDispatchToProps = {
   getEventDetail: eventAction.getEventDetail,
+  addEventReview: eventAction.addEventReview,
   attendEvent: eventAction.attendEvent,
   withdrawEvent: eventAction.withdrawEvent,
 };

@@ -1,20 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 import * as peopleAction from "../actions/peopleAction";
-import { Typography, List, Card, Divider, Skeleton } from "antd";
+import { Typography, List, Card, Divider, Skeleton, notification } from "antd";
 import InfiniteScroll from "react-infinite-scroll-component";
 const { Title } = Typography;
 const { Meta } = Card;
 
 const People = (props) => {
-  const { userList, getAllUsers } = props;
+  const { userToken, userList, getAllUsers } = props;
   const [data, setData] = useState([]);
   const [dataIndex, setDataIndex] = useState(0);
+  const history = useHistory();
   const itemAmount = 12;
 
   useEffect(() => {
-    getAllUsers();
-  }, [getAllUsers]);
+    if (userToken) {
+      getAllUsers(userToken);
+    } else {
+      notification['error']({
+        message: 'Please Login',
+        description:
+          'Sorry. You don\'t have authorization to People Page. Please login or sign up.',
+      });
+      history.push("/");
+    }
+  }, [userToken, getAllUsers, history]);
   useEffect(() => {
     if (userList && userList?.length > 0) {
       loadMoreData();
@@ -90,6 +101,7 @@ const People = (props) => {
 const mapStateToProps = (state) => ({
   type: state.peopleReducer.type,
   userList: state.peopleReducer.userList,
+  userToken: state.loginReducer.userToken,
 });
 
 // Dispatch actions
