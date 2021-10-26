@@ -13,7 +13,11 @@ const Login = (props) => {
 
   useEffect(() => {
     if (type === types.LOGIN_SUCCESS && userToken) {
-      history.goBack();
+      if (history.length <= 2) {
+        history.push('/');
+      } else {
+        history.goBack();
+      }
     }
   }, [type, userToken, history]);
 

@@ -13,13 +13,14 @@ const SignUp = (props) => {
 
   useEffect(() => {
     if (type === types.SIGNUP_SUCCESS && userToken) {
-      history.goBack();
+      if (history.length <= 2) {
+        history.push('/');
+      } else {
+        history.goBack();
+      }
     }
   }, [type, userToken, history]);
 
-  const onFinish = (values) => {
-    onSignUp(values);
-  };
   // Form validation messages
   const validateMessages = {
     required: "${label} is required!",
@@ -37,7 +38,7 @@ const SignUp = (props) => {
         name="basic"
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
-        onFinish={onFinish}
+        onFinish={onSignUp}
         autoComplete="off"
         validateMessages={validateMessages}
       >
