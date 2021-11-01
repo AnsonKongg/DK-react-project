@@ -66,7 +66,7 @@ export const addEventReview = (io_data, userToken) => {
 export const attendEvent = (eventId, userToken) => {
     return async dispatch => {
         try {
-            const url = APIs.EVENT_ATTENDEE_API + "/" + eventId;
+            const url = `${APIs.EVENT_ATTENDEE_API}/${eventId}`;
             axios.defaults.headers.Authorization = "Bearer " + userToken;
             await axios.post(url)
             dispatch({
