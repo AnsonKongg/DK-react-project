@@ -19,9 +19,5 @@ export const calculateRate = (event_reviews) => {
  * @returns {boolean}
  */
 export const checkUserAttend = (attendees, user_id) => {
-  const result =
-    attendees &&
-    attendees?.length > 0 &&
-    attendees.find((attendee) => attendee.id === user_id);
-  return result ? true : false;
+  return Boolean(attendees?.find((attendee) => attendee.id === user_id));
 };

@@ -45,7 +45,7 @@ const EventDetail = (props) => {
   );
   const userAttended = useMemo(
     () => eventHelper.checkUserAttend(eventDetail.attendees, userID),
-    [eventDetail.attendees, userID]
+    [JSON.stringify(eventDetail.attendees), userID]   // I am using JSON.stringify, instead of toString()! Please check it.
   );
 
   useEffect(() => {
@@ -68,10 +68,10 @@ const EventDetail = (props) => {
       });
       getEventDetail(eventId, userToken);
     } else if (type === types.ADD_REVIEW_SUCCESS) {
-      setModalVisible(false)
+      _resetReviewForm();
       getEventDetail(eventId, userToken);
     } else if (type === types.ADD_REVIEW_FAILED) {
-      setModalVisible(false)
+      _resetReviewForm();
     }
   }, [type, eventId, userToken, getEventDetail]);
 
@@ -90,6 +90,11 @@ const EventDetail = (props) => {
         userToken
       );
     }
+  };
+  const _resetReviewForm = () => {
+    setNewReviewRate(0);
+    setNewReviewText("");
+    setModalVisible(false);
   };
 
   if (!eventDetail) {
@@ -209,12 +214,12 @@ const EventDetail = (props) => {
                   position: "relative",
                 }}
                 initialCenter={{
-                  lat: eventDetail.lat ? Number(eventDetail.lat) : 0,
-                  lng: eventDetail.long ? Number(eventDetail.long) : 0,
+                  lat: Number(eventDetail.lat || 0),
+                  lng: Number(eventDetail.long || 0),
                 }}
                 center={{
-                  lat: eventDetail.lat ? Number(eventDetail.lat) : 0,
-                  lng: eventDetail.long ? Number(eventDetail.long) : 0,
+                  lat: Number(eventDetail.lat || 0),
+                  lng: Number(eventDetail.long || 0),
                 }}
                 zoom={15}
                 google={props.google}
@@ -232,8 +237,8 @@ const EventDetail = (props) => {
           </Row>
           <Divider />
           {userAttended ? (
-            <div className="card-small-text-container ">
-              <Text className="card-small-text " strong>
+            <div className="card-small-text-container">
+              <Text className="card-small-text" strong>
                 You are attending this event
               </Text>
               <Button
@@ -260,7 +265,7 @@ const EventDetail = (props) => {
           visible={modalVisible}
           okText="Submit"
           onOk={submitNewReview}
-          onCancel={() => setModalVisible(false)}
+          onCancel={() => _resetReviewForm()}
         >
           <Rate
             value={newReviewRate}
@@ -268,6 +273,7 @@ const EventDetail = (props) => {
           />
           <TextArea
             rows={6}
+            value={newReviewText}
             showCount
             maxLength={1000}
             onChange={(e) => setNewReviewText(e.target.value)}

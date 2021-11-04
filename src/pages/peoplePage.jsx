@@ -11,6 +11,7 @@ const People = (props) => {
   const { userToken, userList, getAllUsers } = props;
   const [data, setData] = useState([]);
   const [dataIndex, setDataIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
   const history = useHistory();
   const itemAmount = 12;
 
@@ -18,10 +19,10 @@ const People = (props) => {
     if (userToken) {
       getAllUsers(userToken);
     } else {
-      notification['error']({
-        message: 'Please Login',
+      notification["error"]({
+        message: "Please Login",
         description:
-          'Sorry. You don\'t have authorization to People Page. Please login or sign up.',
+          "Sorry. You don't have authorization to People Page. Please login or sign up.",
       });
       history.push("/");
     }
@@ -33,14 +34,19 @@ const People = (props) => {
   }, [userList]);
 
   const loadMoreData = () => {
-    if (userList && userList?.length > 0) {
+    if (userList && userList?.length > 0 && !loading) {
+      setLoading(true);
       if (dataIndex + itemAmount > userList.length - 1) {
         setData([...data, ...userList.slice(dataIndex)]);
         setDataIndex(userList.length - 1);
       } else {
-        setData([...data, ...userList.slice(dataIndex, dataIndex + itemAmount)]);
+        setData([
+          ...data,
+          ...userList.slice(dataIndex, dataIndex + itemAmount),
+        ]);
         setDataIndex(dataIndex + itemAmount);
       }
+      setLoading(false)
     }
   };
 
@@ -50,48 +56,49 @@ const People = (props) => {
     return (
       <div className="people-page-backgroup">
         <Title level={2}>All people</Title>
-        <InfiniteScroll
-          dataLength={data.length}
-          next={()=> loadMoreData()}
-          hasMore={data.length < userList.length}
-          loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
-          endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
-          scrollableTarget="scrollableDiv"
-        >
-          <List
-            grid={{
-              gutter: 16,
-              xs: 1,
-              sm: 1,
-              md: 2,
-              lg: 3,
-              xl: 4,
-              xxl: 4,
-            }}
-            dataSource={data}
-            renderItem={(item) => (
-              <List.Item>
-                <Card
-                  cover={
-                    <img
-                      alt="example"
-                      src={
-                        item.profile_picture_url
-                          ? item.profile_picture_url
-                          : "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                      }
+        {!loading && (
+          <InfiniteScroll
+            dataLength={data.length}
+            next={() => loadMoreData()}
+            hasMore={data.length < userList.length}
+            loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
+            endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+            scrollableTarget="scrollableDiv"
+          >
+            <List
+              grid={{
+                gutter: 16,
+                xs: 1,
+                sm: 1,
+                md: 2,
+                lg: 3,
+                xl: 4,
+                xxl: 4,
+              }}
+              dataSource={data}
+              renderItem={(item) => (
+                <List.Item>
+                  <Card
+                    cover={
+                      <img
+                        alt="example"
+                        src={
+                          item.profile_picture_url ||
+                          "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                        }
+                      />
+                    }
+                  >
+                    <Meta
+                      title={`${item.first_name} ${item.last_name}`}
+                      description={item.email}
                     />
-                  }
-                >
-                  <Meta
-                    title={`${item.first_name} ${item.last_name}`}
-                    description={item.email}
-                  />
-                </Card>
-              </List.Item>
-            )}
-          />
-        </InfiniteScroll>
+                  </Card>
+                </List.Item>
+              )}
+            />
+          </InfiniteScroll>
+        )}
       </div>
     );
   }
