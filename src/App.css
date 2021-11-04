@@ -87,9 +87,18 @@
 }
 .card-small {
   width: 30vw;
-  max-height: 55vh;
+  max-height: 60vh;
   background-color: #fff;
   padding: 20px;
+}
+.card-small-text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.card-small-text {
+  height: 5vh;
 }
 .card-button {
   width: 100%;
@@ -98,6 +107,16 @@
   width: 27vw;
   height: 30vh;
   position: 'relative';
+}
+
+/* people Section */
+.people-page-backgroup {
+  height: 90vh;
+  background-color: #fff;
+  padding: 20px;
+  padding-left: 40px;
+  padding-right: 40px;
+  overflow-y: scroll;
 }
 
 /* Login Section */

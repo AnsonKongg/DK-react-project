@@ -2,6 +2,7 @@ import * as types from "../config/ActionTypes";
 const loginState = {
     type: "",
     userToken: "",
+    userID: ""
 };
 
 const loginReducer = (state = loginState, action) => {
@@ -11,6 +12,7 @@ const loginReducer = (state = loginState, action) => {
                 ...state,
                 type: action.type,
                 userToken: action.userToken,
+                userID: action.userID,
             };
         case types.LOGIN_FAILED:
             return {
@@ -22,6 +24,7 @@ const loginReducer = (state = loginState, action) => {
                 ...state,
                 type: action.type,
                 userToken: action.userToken,
+                userID: action.userID,
             };
         case types.SIGNUP_FAILED:
             return {

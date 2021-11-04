@@ -29,6 +29,36 @@ const eventReducer = (state = eventState, action) => {
                 ...state,
                 type: action.type,
             };
+        case types.ADD_REVIEW_SUCCESS:
+            return {
+                ...state,
+                type: action.type,
+            };
+        case types.ADD_REVIEW_FAILED:
+            return {
+                ...state,
+                type: action.type,
+            };
+        case types.ATTEND_EVENT_SUCCESS:
+            return {
+                ...state,
+                type: action.type,
+            };
+        case types.WITHDRAW_EVENT_SUCCESS:
+            return {
+                ...state,
+                type: action.type,
+            };
+        case types.WITHDRAW_EVENT_FAILED:
+            return {
+                ...state,
+                type: action.type,
+            };
+        case types.ATTEND_EVENT_FAILED:
+            return {
+                ...state,
+                type: action.type,
+            };
         default:
             return state;
     }

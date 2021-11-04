@@ -1,9 +1,10 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import * as eventHelper from "../utils/eventHelper";
 import * as eventAction from "../actions/eventAction";
+import * as types from "../config/ActionTypes";
 import {
   Avatar,
   Typography,
@@ -13,19 +14,38 @@ import {
   Button,
   Rate,
   List,
+  Modal,
+  Input,
 } from "antd";
 import { StarOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
-const { Text, Title } = Typography;
+const { Text, Title, Link } = Typography;
+const { TextArea } = Input;
 
 const EventDetail = (props) => {
-  const { userToken, eventDetail, getEventDetail } = props;
+  const {
+    type,
+    eventDetail,
+    userToken,
+    userID,
+    getEventDetail,
+    attendEvent,
+    withdrawEvent,
+    addEventReview,
+  } = props;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newReviewRate, setNewReviewRate] = useState(0);
+  const [newReviewText, setNewReviewText] = useState("");
   const { eventId } = useParams();
   const history = useHistory();
   const rating = useMemo(
     () => eventHelper.calculateRate(eventDetail.reviews),
     [eventDetail.reviews]
+  );
+  const userAttended = useMemo(
+    () => eventHelper.checkUserAttend(eventDetail.attendees, userID),
+    [JSON.stringify(eventDetail.attendees), userID]   // I am using JSON.stringify, instead of toString()! Please check it.
   );
 
   useEffect(() => {
@@ -35,6 +55,47 @@ const EventDetail = (props) => {
       history.push("/login");
     }
   }, [userToken, eventId, getEventDetail, history]);
+  useEffect(() => {
+    if (type === types.ATTEND_EVENT_SUCCESS) {
+      Modal.success({
+        content: "You have successfully registered this event.",
+      });
+      getEventDetail(eventId, userToken);
+    } else if (type === types.WITHDRAW_EVENT_SUCCESS) {
+      Modal.success({
+        content:
+          "You have successfully removed the registeration of this event.",
+      });
+      getEventDetail(eventId, userToken);
+    } else if (type === types.ADD_REVIEW_SUCCESS) {
+      _resetReviewForm();
+      getEventDetail(eventId, userToken);
+    } else if (type === types.ADD_REVIEW_FAILED) {
+      _resetReviewForm();
+    }
+  }, [type, eventId, userToken, getEventDetail]);
+
+  const submitNewReview = () => {
+    if (!newReviewText) {
+      Modal.warning({
+        content: "Please input review content!!",
+      });
+    } else {
+      addEventReview(
+        {
+          rate: newReviewRate,
+          review: newReviewText,
+          event_id: eventId,
+        },
+        userToken
+      );
+    }
+  };
+  const _resetReviewForm = () => {
+    setNewReviewRate(0);
+    setNewReviewText("");
+    setModalVisible(false);
+  };
 
   if (!eventDetail) {
     return;
@@ -92,8 +153,9 @@ const EventDetail = (props) => {
             </div>
           </div>
           <Divider />
-          <div className="card-host-container">
+          <div className="row-container">
             <Text strong>What other people think about this event?</Text>
+            <Link onClick={() => setModalVisible(true)}>Add Review</Link>
           </div>
           {eventDetail.reviews?.length > 0 && (
             <List
@@ -152,12 +214,12 @@ const EventDetail = (props) => {
                   position: "relative",
                 }}
                 initialCenter={{
-                  lat: Number(eventDetail.lat),
-                  lng: Number(eventDetail.long),
+                  lat: Number(eventDetail.lat || 0),
+                  lng: Number(eventDetail.long || 0),
                 }}
                 center={{
-                  lat: Number(eventDetail.lat),
-                  lng: Number(eventDetail.long),
+                  lat: Number(eventDetail.lat || 0),
+                  lng: Number(eventDetail.long || 0),
                 }}
                 zoom={15}
                 google={props.google}
@@ -174,10 +236,49 @@ const EventDetail = (props) => {
             </div>
           </Row>
           <Divider />
-          <Button className="card-button" type="primary" size="large">
-            Attend
-          </Button>
+          {userAttended ? (
+            <div className="card-small-text-container">
+              <Text className="card-small-text" strong>
+                You are attending this event
+              </Text>
+              <Button
+                className="card-button"
+                size="large"
+                onClick={() => withdrawEvent(eventId, userToken)}
+              >
+                Withdraw Attendence
+              </Button>
+            </div>
+          ) : (
+            <Button
+              className="card-button"
+              type="primary"
+              size="large"
+              onClick={() => attendEvent(eventId, userToken)}
+            >
+              Attend
+            </Button>
+          )}
         </div>
+        <Modal
+          title="New Review"
+          visible={modalVisible}
+          okText="Submit"
+          onOk={submitNewReview}
+          onCancel={() => _resetReviewForm()}
+        >
+          <Rate
+            value={newReviewRate}
+            onChange={(value) => setNewReviewRate(value)}
+          />
+          <TextArea
+            rows={6}
+            value={newReviewText}
+            showCount
+            maxLength={1000}
+            onChange={(e) => setNewReviewText(e.target.value)}
+          />
+        </Modal>
       </div>
     );
   }
@@ -188,11 +289,15 @@ const mapStateToProps = (state) => ({
   type: state.eventReducer.type,
   eventDetail: state.eventReducer.eventDetail,
   userToken: state.loginReducer.userToken,
+  userID: state.loginReducer.userID,
 });
 
 // Dispatch actions
 const mapDispatchToProps = {
   getEventDetail: eventAction.getEventDetail,
+  addEventReview: eventAction.addEventReview,
+  attendEvent: eventAction.attendEvent,
+  withdrawEvent: eventAction.withdrawEvent,
 };
 
 const EventDetailMap = GoogleApiWrapper({
