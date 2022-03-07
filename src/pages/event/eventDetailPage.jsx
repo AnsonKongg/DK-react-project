@@ -2,9 +2,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import * as eventHelper from "../utils/eventHelper";
-import * as eventAction from "../actions/eventAction";
-import * as types from "../config/ActionTypes";
+import * as eventHelper from "../../utils/eventHelper";
+import * as eventAction from "../../actions/eventAction";
+import * as types from "../../config/ActionTypes";
 import {
   Avatar,
   Typography,

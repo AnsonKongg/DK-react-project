@@ -3,8 +3,9 @@ import { Switch, Route } from "react-router-dom";
 import './App.css';
 import 'antd/dist/antd.css';
 import PageLayout from './components/layout';
-import HomePage from './pages/homePage';
-import EventDetailPage from './pages/eventDetailPage';
+import HomePage from './pages/event/homePage';
+import EventDetailPage from './pages/event/eventDetailPage';
+import CreateEventPage from './pages/event/createEventPage';
 import PeoplePage from './pages/peoplePage';
 import Profile from './pages/profilePage';
 import Login from './pages/loginPage';
@@ -14,6 +15,10 @@ const routes = [
   {
     path: '/eventDetail/:eventId',
     component: EventDetailPage,
+  },
+  {
+    path: '/createEvent',
+    component: CreateEventPage,
   },
   {
     path: '/people',

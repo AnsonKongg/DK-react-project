@@ -35,10 +35,21 @@ const PageHeader = (props) => {
         </div>
         <div>
           {userToken ? (
-            <Text>Hello</Text>
+            <>
+              <span style={{ paddingRight: 15 }}>
+                <Button
+                  type="primary"
+                  ghost
+                  onClick={() => goToLogin("/createEvent")}
+                >
+                  Host an event
+                </Button>
+              </span>
+              <Text>Hello</Text>
+            </>
           ) : (
             <>
-              <span style={{ paddingRight: 10 }}>
+              <span style={{ paddingRight: 15 }}>
                 <Button
                   type="primary"
                   ghost

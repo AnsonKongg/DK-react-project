@@ -31,6 +31,7 @@ export const getEventDetail = (eventId, userToken) => {
             axios.defaults.headers.Authorization = "Bearer " + userToken;
             const response = await axios.get(url)
             const eventDetail = response.data
+            console.log(eventDetail)
             if (eventDetail.reviews?.length > 0) {
                 eventDetail.reviews = eventDetail.reviews.reverse()
             }

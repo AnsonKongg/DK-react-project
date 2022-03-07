@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
-import * as eventAction from "../actions/eventAction";
-import * as eventHelper from "../utils/eventHelper";
+import * as eventAction from "../../actions/eventAction";
+import * as eventHelper from "../../utils/eventHelper";
 import { Avatar, List, Space, Typography } from "antd";
 import { MessageOutlined, StarOutlined } from "@ant-design/icons";
-import { Calendar } from '../components';
+import { Calendar } from '../../components';
 import { format } from 'date-fns'
 const { Text } = Typography;
 
